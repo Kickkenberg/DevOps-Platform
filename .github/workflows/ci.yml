@@ -3,7 +3,7 @@ name: DevOps Platform CI
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
 
