@@ -1,0 +1,16 @@
+Stack:
+- Docker
+- Nginx
+- Prometheus
+- Grafana (optional)
+
+Architecture:
+
+Client
+  ↓
+Nginx
+  ↓
+App container
+
+Monitoring:
+Prometheus
