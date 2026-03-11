@@ -6,6 +6,7 @@ Docker
 Docker Compose
 Nginx (Reverse Proxy)
 Prometheus (Monitoring)
+Grafana (Metrics)
 
 ======================================================================================================================================
 
