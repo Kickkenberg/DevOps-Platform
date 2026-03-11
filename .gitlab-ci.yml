@@ -1,0 +1,17 @@
+stages:
+  - build
+  - deploy
+
+build_image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t devops-platform .
+
+deploy_app:
+  stage: deploy
+  script:
+    - docker compose down
+    - docker compose up -d
