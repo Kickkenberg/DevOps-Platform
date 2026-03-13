@@ -1,108 +1,106 @@
-DevOps Platform
+# DevOps Platform
+
 Демонстрационный DevOps-проект, показывающий развёртывание контейнеризированного приложения, настройку reverse proxy и базовый мониторинг системы.
 
 ---
 
-Используемые технологии
-Linux
-Docker
-Docker Compose
-Nginx (Reverse Proxy)
-Prometheus (Monitoring)
-Grafana (Metrics)
-GitHub Actions (ci.yml)
+# Используемые технологии
+
+- Linux
+- Docker
+- Docker Compose
+- Nginx (Reverse Proxy)
+- Prometheus (Monitoring)
+- Grafana (Metrics)
+- GitHub Actions (ci.yml)
 
 ---
 
-# Архитектура
+# Сервисы
 
-Система состоит из нескольких сервисов:
+## Приложение
+Простое веб-приложение, запущенное внутри Docker-контейнера.
 
-* **Application** — веб-приложение внутри Docker контейнера
-* **Nginx** — reverse proxy для обработки входящих запросов
-* **Prometheus** — сбор метрик
-* **Node Exporter** — системные метрики сервера
-* **Grafana** — визуализация метрик
+## Reverse Proxy
+Nginx используется как reverse proxy для обработки входящих запросов и передачи их в контейнер приложения.
 
-# Схема взаимодействия
+**Схема работы**
 
-client → nginx → application
+```
+client → nginx → app
+```
 
-Метрики:
+---
 
-services → Prometheus → Grafana
+# Мониторинг
+
+Для мониторинга используется **Prometheus**.  
+Он собирает метрики с сервисов платформы.
+
+Prometheus собирает показатели из сервисов и **Node Exporter**.
+
+**Grafana** используется для визуализации системных показателей, таких как:
+
+- загрузка процессора
+- использование памяти
+- дисковый ввод-вывод
+- сетевой трафик
 
 ---
 
 # Запуск проекта
 
-# 1. Клонировать репозиторий
+## Клонировать репозиторий
+
+```bash
 git clone https://github.com/Kickkenberg/DevOps-Platform.git
+```
 
+## Перейти в директорию проекта
 
-# 2. Перейти в директорию проекта
-cd DevOps-Platform
+```bash
+cd devops-platform
+```
 
+## Запустить платформу
 
-# 3. Запустить сервисы
+```bash
 docker compose up -d
+```
 
+## Проверить контейнеры
 
-# 4. Проверить контейнеры
+```bash
 docker ps
-
+```
 
 ---
 
 # Доступ к сервисам
 
-| Сервис                | Адрес                         |
-| --------------------- | ----------------------------- |
-| Application           | http://localhost:8080         |
-| Prometheus            | http://localhost:9090         |
-| Grafana               | http://localhost:3000         |
-| Node Exporter Metrics | http://localhost:9100/metrics |
+**Приложение**  
+http://localhost:8080
+
+**Prometheus**  
+http://localhost:9090
+
+**Grafana**  
+http://localhost:3000
+
+**Metrics**  
+http://localhost:9100/metrics
 
 ---
 
-# Observability
+# CI Pipeline (GitHub Actions)
 
-# Prometheus
+В проекте реализован **CI pipeline** с использованием GitHub Actions.  
+Pipeline автоматически запускается при каждом **push** в ветку `master`.
 
-Prometheus используется для сбора метрик инфраструктуры.
+Основная задача pipeline — проверить, что приложение успешно собирается в **Docker-образ**.
 
-Он собирает данные из:
+## Зачем нужен CI pipeline
 
-* Node Exporter
-* сервисов платформы
-
-# Grafana
-
-Grafana используется для визуализации метрик системы.
-
-Основные метрики:
-
-* загрузка CPU
-* использование RAM
-* дисковая активность
-* сетевой трафик
-
----
-
-# CI Pipeline
-
-В проекте реализован CI pipeline с использованием **GitHub Actions**.
-
-Pipeline запускается автоматически при каждом `push`.
-
-### Pipeline выполняет
-
-* checkout репозитория
-* сборку Docker образа
-* проверку корректности Dockerfile
-
-Это позволяет:
-
-* автоматически проверять сборку приложения
-* предотвращать ошибки в Dockerfile
-* гарантировать работоспособность образа перед деплоем
+- автоматически проверяет сборку приложения
+- проверяет корректность работы Dockerfile
+- помогает обнаружить ошибки до деплоя
