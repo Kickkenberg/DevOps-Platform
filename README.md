@@ -1,98 +1,153 @@
-DevOps Platform
-Демонстрационный DevOps-проект, показывающий развёртывание контейнеризированного приложения, настройку reverse proxy и базовый мониторинг системы.
+# DevOps Platform
 
-Используемые технологии:
+Демонстрационная DevOps-платформа, показывающая развёртывание контейнеризированного приложения, настройку reverse proxy, мониторинг и централизованное логирование.
+
+Проект имитирует production-инфраструктуру с использованием Docker и observability stack.
+
+---
+
+
+# Используемые технологии
 
 * Linux
 * Docker
 * Docker Compose
 * Nginx (Reverse Proxy)
 * Prometheus (Monitoring)
-* Grafana (Metrics)
-* GitHub Actions (ci.yml)
+* Grafana (Metrics Visualization)
+* Loki (Centralized Logging)
+* GitHub Actions (CI Pipeline)
+
+
 
 ---
 
-# Архитектура
+# Сервисы платформы
 
-Система состоит из нескольких сервисов:
+## Application
 
-* Application — веб-приложение внутри Docker контейнера
-* Nginx — reverse proxy для обработки входящих запросов
-* Prometheus — сбор метрик
-* Node Exporter — системные метрики сервера
-* Grafana — визуализация метрик
+Простое веб-приложение, запущенное в Docker-контейнере.
 
-# Схема взаимодействия
-client → nginx → application
-
-Метрики:
-services → Prometheus → Grafana
 
 ---
 
-# Запуск проекта
+## Reverse Proxy
 
-# 1. Клонировать репозиторий
-git clone https://github.com/Kickkenberg/DevOps-Platform.git
+Nginx используется как reverse proxy для маршрутизации входящих HTTP-запросов.
 
-
-# 2. Перейти в директорию проекта
-cd DevOps-Platform
-
-
-# 3. Запустить сервисы
-docker compose up -d
-
-
-## 4. Проверить контейнеры
-docker ps
+```
+Client → Nginx → Application
+```
 
 ---
 
-# Доступ к сервисам
+# Monitoring Stack
 
-| Сервис                | Адрес                         |
-| --------------------- | ----------------------------- |
-| Application           | http://localhost:8080         |
-| Prometheus            | http://localhost:9090         |
-| Grafana               | http://localhost:3000         |
-| Node Exporter Metrics | http://localhost:9100/metrics |
+Метрики инфраструктуры собираются с помощью Prometheus.
+
+Node Exporter предоставляет системные метрики:
+
+* CPU
+* RAM
+* Disk
+* Network
+
+Prometheus собирает метрики и передаёт их в Grafana для визуализации.
 
 ---
 
-# Observability
+# Logging Stack
 
-# Prometheus
+Логи контейнеров собираются через Docker logging driver и отправляются в Loki.
 
-Prometheus используется для сбора метрик инфраструктуры.
+Grafana используется для просмотра и анализа логов.
 
-Он собирает данные из:
+Пример запроса Loki:
 
-* Node Exporter
-* сервисов платформы
+```
+{compose_service="reverse_proxy"}
+```
 
-# Grafana
+Поиск ошибок:
 
-Grafana используется для визуализации метрик системы.
+```
+{compose_service="reverse_proxy"} |= "error"
+```
 
-Основные метрики:
+---
 
-* загрузка CPU
-* использование RAM
-* дисковая активность
-* сетевой трафик
+# Grafana Auto Provisioning
+
+Grafana автоматически настраивает:
+
+* источники данных (Prometheus и Loki)
+* dashboards
+
+Это реализовано через provisioning.
 
 ---
 
 # CI Pipeline
 
-В проекте реализован CI pipeline с использованием **GitHub Actions**.
+В проекте используется GitHub Actions.
 
-Pipeline запускается автоматически при каждом `push`.
+Pipeline автоматически запускается при push в ветку main.
 
-# Pipeline выполняет
 
-* checkout репозитория
-* сборку Docker образа
-* проверку корректности Dockerfile
+
+---
+
+# Запуск проекта
+
+Клонировать репозиторий:
+
+```
+git clone https://github.com/YOUR_USERNAME/devops-platform.git
+```
+
+Перейти в директорию проекта:
+
+```
+cd devops-platform
+```
+
+Запустить платформу:
+
+```
+docker compose up -d
+```
+
+---
+
+# Доступ к сервисам
+
+Application
+
+```
+http://localhost:8080
+```
+
+Grafana
+
+```
+http://localhost:3000
+```
+
+Prometheus
+
+```
+http://localhost:9090
+```
+
+---
+
+# DevOps практики, реализованные в проекте
+
+* контейнеризация приложений
+* multi-container архитектура
+* reverse proxy
+* monitoring stack
+* centralized logging
+* CI pipeline
+* infrastructure automation
+* observability platform
