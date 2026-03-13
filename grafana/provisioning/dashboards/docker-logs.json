@@ -1,0 +1,15 @@
+{
+  "title": "Docker Logs",
+  "panels": [
+    {
+      "type": "logs",
+      "title": "Container Logs",
+      "datasource": "Loki",
+      "targets": [
+        {
+          "expr": "{compose_service=~\".+\"}"
+        }
+      ]
+    }
+  ]
+}
