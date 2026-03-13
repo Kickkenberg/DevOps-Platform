@@ -3,13 +3,13 @@ DevOps Platform
 
 Используемые технологии:
 
-Linux
-Docker
-Docker Compose
-Nginx (Reverse Proxy)
-Prometheus (Monitoring)
-Grafana (Metrics)
-GitHub Actions (ci.yml)
+* Linux
+* Docker
+* Docker Compose
+* Nginx (Reverse Proxy)
+* Prometheus (Monitoring)
+* Grafana (Metrics)
+* GitHub Actions (ci.yml)
 
 ---
 
