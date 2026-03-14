@@ -41,7 +41,7 @@ Client → Nginx → Application
 
 ---
 
-# Monitoring Stack
+# Observability Stack
 
 Метрики инфраструктуры собираются с помощью Prometheus.
 
@@ -102,7 +102,11 @@ Pipeline автоматически запускается при push в вет
 Клонировать репозиторий:
 
 ```
+<<<<<<< HEAD
 git clone https://github.com/Kickkenberg/DevOps-Platform.git
+=======
+git clone https://github.com/Kickkenberg/devops-platform.git
+>>>>>>> 00737bd (update)
 ```
 
 Перейти в директорию проекта:
