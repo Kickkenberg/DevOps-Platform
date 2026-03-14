@@ -102,7 +102,7 @@ Pipeline автоматически запускается при push в вет
 Клонировать репозиторий:
 
 ```
-git clone https://github.com/YOUR_USERNAME/devops-platform.git
+git clone https://github.com/Kickkenberg/DevOps-Platform.git
 ```
 
 Перейти в директорию проекта:
