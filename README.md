@@ -1,139 +1,217 @@
-# DevOps Platform
+# 🚀 DevOps Platform (Docker + Kubernetes + Observability)
 
-Демонстрационная DevOps-платформа, показывающая развёртывание контейнеризированного приложения, настройку reverse proxy, мониторинг и централизованное логирование.
-
-Проект имитирует production-инфраструктуру с использованием Docker и observability stack.
+Демонстрационный DevOps-проект, показывающий развёртывание контейнеризированного приложения, настройку мониторинга, логирования и оркестрации с использованием Kubernetes.
 
 ---
 
+# 📦 Стек технологий
 
-# Используемые технологии
+## 🐳 Контейнеризация
 
-* Linux
 * Docker
 * Docker Compose
-* Nginx (Reverse Proxy)
-* Prometheus (Monitoring)
-* Grafana (Metrics Visualization)
-* Loki (Centralized Logging)
-* GitHub Actions (CI Pipeline)
 
+## ☸️ Оркестрация
 
+* Kubernetes (Minikube)
 
----
+## 📊 Мониторинг
 
-# Сервисы платформы
+* Prometheus (Helm)
+* Grafana (Helm)
+* Node Exporter
+* cAdvisor
 
-## Application
+## 📜 Логирование
 
-Простое веб-приложение, запущенное в Docker-контейнере.
+* Loki
+* Grafana Alloy
 
+## 🔁 CI/CD
 
----
+* GitHub Actions
 
-## Reverse Proxy
+## ⚙️ IaC / Automation (в процессе)
 
-Nginx используется как reverse proxy для маршрутизации входящих HTTP-запросов.
-
-```
-Client → Nginx → Application
-```
-
----
-
-# Observability Stack
-
-Метрики инфраструктуры собираются с помощью Prometheus.
-
-Node Exporter предоставляет системные метрики:
-
-* CPU
-* RAM
-* Disk
-* Network
-
-Prometheus собирает метрики и передаёт их в Grafana для визуализации.
+* Terraform
+* Ansible
 
 ---
 
-# Logging Stack
 
-Логи контейнеров собираются через Docker logging driver и отправляются в Loki.
-
-Grafana используется для просмотра и анализа логов.
-
-Пример запроса Loki:
+# 📁 Структура проекта
 
 ```
-{compose_service="reverse_proxy"}
-```
-
-Поиск ошибок:
-
-```
-{compose_service="reverse_proxy"} |= "error"
+DevOps-Platform
+│
+├── app/                  # Flask приложение
+├── nginx/                # конфиг nginx
+├── monitoring/           # Prometheus / Alertmanager config
+├── logging/              # Alloy config
+│
+├── docker-compose.yml    # локальный запуск
+│
+├── k8s/                  # Kubernetes манифесты
+│   ├── namespace.yaml
+│   ├── app-deployment.yaml
+│   ├── app-service.yaml
+│   ├── ingress.yaml
+│   ├── hpa.yaml
+│   └── servicemonitor.yaml
+│
+└── .github/workflows     # CI/CD
 ```
 
 ---
 
-# Grafana Auto Provisioning
+# ⚙️ Функционал проекта
 
-Grafana автоматически настраивает:
+## ✅ Реализовано
 
-* источники данных (Prometheus и Loki)
-* dashboards
+### Docker
 
-Это реализовано через provisioning.
+* Контейнеризация приложения
+* Reverse proxy (Nginx)
+* Monitoring stack
+* Logging stack
+
+### Kubernetes
+
+* Deployment
+* Service
+* Ingress
+* Namespace
+* Horizontal Pod Autoscaler (HPA)
+
+### Observability
+
+* Prometheus через Helm
+* Grafana через Helm
+* ServiceMonitor
+* Метрики приложения (`/metrics`)
+
+### Приложение
+
+* Flask app
+* Prometheus metrics (prometheus-client)
 
 ---
 
-# CI Pipeline
-
-В проекте используется GitHub Actions.
-
-Pipeline автоматически запускается при push в ветку master.
-
-
+# 🚀 Запуск проекта
 
 ---
 
-# Запуск проекта
+## 🐳 1. Локально через Docker Compose
 
-Клонировать репозиторий:
-
-```
-git clone https://github.com/Kickkenberg/DevOps-Platform.git
-```
-
-Перейти в директорию проекта:
-
-```
-cd devops-platform
-```
-
-Запустить платформу:
-
-```
+```bash
 docker compose up -d
 ```
 
+Доступ:
+
+* App: http://localhost:8080
+* Grafana: http://localhost:3000
+* Prometheus: http://localhost:9090
+
 ---
 
-# Доступ к сервисам
+## ☸️ 2. Kubernetes (Minikube)
 
-Application
+### Запуск кластера
+
+```bash
+minikube start
+minikube addons enable ingress
+minikube addons enable metrics-server
+```
+
+---
+
+### Сборка образа
+
+```bash
+docker build -t devops-platform:latest ./app
+minikube image load devops-platform:latest
+```
+
+---
+
+### Деплой
+
+```bash
+kubectl apply -f k8s/
+```
+
+---
+
+### Проверка
+
+```bash
+kubectl get pods -n devops-platform
+```
+
+---
+
+### Доступ к приложению
+
+```bash
+kubectl port-forward svc/demo-app-service 8080:80 -n devops-platform
+```
+
+Открыть:
 
 ```
 http://localhost:8080
 ```
 
-Grafana
+---
+
+# 📊 Мониторинг (Kubernetes)
+
+---
+
+## Установка Prometheus + Grafana
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+kubectl create namespace monitoring
+
+helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring
+```
+
+---
+
+## Доступ к Grafana
+
+```bash
+kubectl port-forward svc/monitoring-grafana 3000:80 -n monitoring
+```
 
 ```
 http://localhost:3000
 ```
 
-Prometheus
+Логин:
+
+```
+admin
+```
+
+Пароль:
+
+```bash
+kubectl get secret monitoring-grafana -n monitoring -o jsonpath="{.data.admin-password}" | base64 -d
+```
+
+---
+
+## Доступ к Prometheus
+
+```bash
+kubectl port-forward svc/monitoring-kube-prometheus-prometheus 9090:9090 -n monitoring
+```
 
 ```
 http://localhost:9090
@@ -141,13 +219,45 @@ http://localhost:9090
 
 ---
 
-# DevOps практики, реализованные в проекте
+# 📈 Метрики приложения
 
-* контейнеризация приложений
-* multi-container архитектура
-* reverse proxy
-* monitoring stack
-* centralized logging
-* CI pipeline
-* infrastructure automation
-* observability platform
+Flask приложение поддерживает:
+
+```
+/metrics
+```
+
+Пример метрики:
+
+```
+app_requests_total
+```
+
+---
+
+# 🔄 Автоскейлинг (HPA)
+
+```bash
+kubectl get hpa -n devops-platform
+```
+
+Логика:
+
+```
+CPU > 70% → scale up
+CPU < 70% → scale down
+```
+
+---
+
+# 🧠 Что демонстрирует проект
+
+* Контейнеризация приложений
+* Kubernetes orchestration
+* Observability (metrics + logs)
+* Autoscaling
+* Service discovery
+* Monitoring через Helm
+
+
+
