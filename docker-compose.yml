@@ -83,7 +83,7 @@ services:
       - /sys:/sys:ro 
       - /var/lib/docker/:/var/lib/docker:ro 
     privileged: true 
-    mem_limit: 100m
+    mem_limit: 300m
     cpus: 0.2
 
 volumes:
