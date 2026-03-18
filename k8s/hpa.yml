@@ -1,0 +1,23 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler           # Объект который управляет кол-вом реплик, подов.
+
+metadata:
+  name: demo-app-hpa
+  namespace: devops-platform
+
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: demo-app
+
+  minReplicas: 2                        # Mинимальное количество подов, которое HPA никогда не уменьшит ниже.
+  maxReplicas: 5                        # Mаксимальное количество подов, которое HPA может создать.
+
+  metrics:                              # Cписок метрик, по которым HPA будет принимать решение о масштабировании
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70

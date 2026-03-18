@@ -5,12 +5,16 @@ metadata:
   name: demo-app-service
   namespace: devops-platform
 
+  labels: 
+    app: demo-app 
+
 spec:
   selector:
     app: demo-app 
 
   ports:
-    - protocol: TCP 
+    - name: http 
+      protocol: TCP 
       port: 80
       targetPort: 5000
     

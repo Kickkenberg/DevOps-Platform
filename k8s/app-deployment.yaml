@@ -21,5 +21,28 @@ spec:
       containers:
       - name: demo-app
         image: nginx:alpine
+
         ports:
         - containerPort: 5000
+
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "300m"
+            memory: "256Mi"
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5           # ждём 5 секунд после старта
+          periodSeconds: 10                # проверяем каждые 10 секунд
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10          # ждём 10 секунд после старта
+          periodSeconds: 20                # проверяем каждые 20 секунд
